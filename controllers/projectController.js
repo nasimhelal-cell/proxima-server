@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 // get all projects---------------------------------------------------------------------------------
 const getAllProjects = async (req, res) => {
-  const projectsArray = await Project.find({});
+  const projectsArray = await Project.find({}).sort({ createdAt: -1 });
   res.status(200).json(projectsArray);
 };
 
