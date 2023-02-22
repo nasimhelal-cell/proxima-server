@@ -27,11 +27,31 @@ const getSingleProject = async (req, res) => {
 
 //post a new single project-------------------------------------------------------------------------
 const postProject = async (req, res) => {
-  const data = req.body;
+  const { title, tech, budget, duration, manager, dev } = req.body;
+
+  let emptyFields = [];
+
+  if (!title) emptyFields.push("title");
+
+  if (!tech) emptyFields.push("tech");
+
+  if (!budget) emptyFields.push("budget");
+
+  if (!duration) emptyFields.push("duration");
+
+  if (!manager) emptyFields.push("manager");
+
+  if (!dev) emptyFields.push("dev");
+
+  if (emptyFields.length > 0) {
+    return res
+      .status(400)
+      .json({ error: "Please fill in all fields", emptyFields: emptyFields });
+  }
 
   try {
     //this project is refered as the data which is post to DB
-    const project = await Project.create({ ...data });
+    const project = await Project.create({ ...req.body });
     res.status(200).json(project);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -58,12 +78,37 @@ const deleteProject = async (req, res) => {
 //updated a project---------------------------------------------------------------------------------
 const updateProject = async (req, res) => {
   const { id } = req.params;
+  const { title, tech, budget, duration, manager, dev } = req.body;
+
+  let emptyFields = [];
+
+  if (!title) emptyFields.push("title");
+
+  if (!tech) emptyFields.push("tech");
+
+  if (!budget) emptyFields.push("budget");
+
+  if (!duration) emptyFields.push("duration");
+
+  if (!manager) emptyFields.push("manager");
+
+  if (!dev) emptyFields.push("dev");
+
+  if (emptyFields.length > 0) {
+    return res
+      .status(400)
+      .json({ error: "Please fill in all fields", emptyFields: emptyFields });
+  }
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "Invalid id" });
   }
 
-  const project = await Project.findOneAndUpdate({ _id: id }, { ...req.body });
+  const project = await Project.findOneAndUpdate(
+    { _id: id },
+    { ...req.body },
+    { new: true }
+  );
 
   if (!project) {
     return res.status(400).json({ error: "No project found" });

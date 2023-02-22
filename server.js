@@ -20,7 +20,7 @@ app.use("/api/projects", projectsRoute);
 //mongodb
 mongoose.set("strictQuery", false); //optional
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 60000 })
   .then(() => {
     //listening request
     app.listen(port, () => {
