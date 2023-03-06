@@ -8,9 +8,16 @@ const createToken = (id) => {
 // user login controller
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  User.login(email, password);
+  try {
+    const user = await User.login(email, password);
 
-  res.json({ message: "login" });
+    // create token
+    const token = createToken(user._id);
+
+    res.status(200).json({ email, token });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 };
 
 // user singup controller

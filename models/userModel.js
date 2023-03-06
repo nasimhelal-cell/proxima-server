@@ -15,7 +15,7 @@ const userSchema = new Schema({
   },
 });
 
-//user defined method making which can be used as User.login()
+//user defined method making which can be used as User.signup()
 userSchema.statics.signup = async function (email, password) {
   //validation
   if (!email || !password) {
@@ -45,5 +45,24 @@ userSchema.statics.signup = async function (email, password) {
   const user = await this.create({ email, password: hash });
   return user;
 };
+//user defined method making which can be used as User.login()
 
+userSchema.statics.login = async function (email, password) {
+  //validation
+  if (!email || !password) {
+    throw Error("All fields must be filled ");
+  }
+  const user = await this.findOne({ email });
+
+  if (!user) {
+    throw Error("Incorrect Email");
+  }
+  const match = await bcrypt.compare(password, user.password); //user.password is in hased version
+  if (!match) {
+    throw Error("Incorrect Password");
+  }
+  if (match) {
+    return user;
+  }
+};
 module.exports = mongoose.model("User", userSchema);
