@@ -7,8 +7,12 @@ const {
   updateProject,
 } = require("../controllers/projectController");
 const Project = require("../models/projectModel");
+
+const requireAuth = require("../middlewares/requireAuth");
+
 const router = express.Router();
 
+router.use(requireAuth);
 //routes
 
 //get all projects
